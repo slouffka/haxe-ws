@@ -23,15 +23,15 @@ class WebSocket {
                     return new haxe.net.impl.WebSocketFlashExternalInterface(url, protocols);
                 }
             #end
-            return haxe.net.impl.WebSocketGeneric.create(url, protocols, origin, "wskey", debug);
+            return haxe.net.impl.WebSocketGeneric.create(url, protocols, origin, debug);
         #end
     }
-	
+
 	#if sys
 	/**
 	 * create server websocket from socket returned by accept()
 	 * wait for onopen() to be called before using websocket
-	 * @param	socket - accepted socket 
+	 * @param	socket - accepted socket
 	 * @param	alredyRecieved - data already read from socket, it should be no more then full http header
 	 * @param	debug - debug messages?
 	 */
@@ -56,10 +56,10 @@ class WebSocket {
 
     public function sendBytes(message:Bytes) {
     }
-	
+
 	public function close() {
 	}
-	
+
 	public var readyState(get, never):ReadyState;
 	function get_readyState():ReadyState throw 'Not implemented';
 
