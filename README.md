@@ -1,26 +1,12 @@
-[![Haxelib Version](https://img.shields.io/github/tag/soywiz/haxe-ws.svg?style=flat&label=haxelib)](http://lib.haxe.org/p/haxe-ws)
+# @colyseus/haxe-ws
 
-WebSockets everywhere! Including javascript, flash and sys targets.
+This project has been forked from [soywiz/haxe-ws](https://github.com/soywiz/haxe-ws).
 
-```haxe
-class WebSocketExample {
-    static public function main() {
-        trace('testing!');
-        var ws = WebSocket.create("ws://127.0.0.1:8000/", ['echo-protocol'], false);
-        ws.onopen = function() {
-            trace('open!');
-            ws.sendString('hello friend!');
-        };
-        ws.onmessageString = function(message) {
-            trace('message from server!' + message);
-        };
+This fork aims to have:
 
-        #if sys
-        while (true) {
-            ws.process();
-            Sys.sleep(0.1);
-        }
-        #end
-    }
-}
-```
+- `WebSocket` client support for all platforms.
+- Haxe 4 compatibility
+
+## License
+
+MIT
