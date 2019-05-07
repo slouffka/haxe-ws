@@ -33,9 +33,7 @@ class WebSocketJs extends WebSocket {
 			if (Std.is(m, String)) {
 				this.onmessageString(m);
 			} else if (Std.is(m, ArrayBuffer)) {
-				// haxe.io.Int8Array
-				// js.html.ArrayBuffer
-				trace('Unhandled websocket onmessage ' + m);
+				this.onmessageBytes(Bytes.ofData(cast (m,ArrayBuffer)));
 			} else if (Std.is(m, js.html.Blob)) {
 				var arrayBuffer:ArrayBuffer;
 				var fileReader = new js.html.FileReader();
