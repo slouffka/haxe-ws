@@ -3,7 +3,7 @@ package haxe.net;
 import haxe.io.Bytes;
 
 class Crypto {
-	static public function getSecureRandomBytes(length:Int):Bytes {
+    static public function getSecureRandomBytes(length:Int):Bytes {
         var reason = '';
         try {
             #if flash
@@ -26,14 +26,13 @@ class Crypto {
                 var rng = new cs.system.security.cryptography.RNGCryptoServiceProvider();
                 rng.GetBytes(out.getData());
                 return out;
+            #elseif windows
+                /* var input = sys.io.File.read("\\Device\\KsecDD"); */
+                return haxe.io.Bytes.ofString(getRandomString(16));
             #elseif sys
                 // https://en.wikipedia.org/wiki//dev/random
                 var out = Bytes.alloc(length);
-                #if windows
-                    var input = sys.io.File.read("\\Device\\KsecDD");
-                #else
-                    var input = sys.io.File.read("/dev/urandom");
-                #end
+                var input = sys.io.File.read("/dev/urandom");
                 input.readBytes(out, 0, length);
                 input.close();
                 return out;
@@ -42,6 +41,16 @@ class Crypto {
             reason = '$e';
         }
         throw "Can't find a secure source of random bytes. Reason: " + reason;
+    }
+
+    // workaround for windows platform
+    public static function getRandomString(length:Int, ?charactersToUse = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"): String
+    {
+        var str = "";
+        for (i in 0...length){
+            str += charactersToUse.charAt( Math.floor((Math.random() *  (Date.now().getTime() % (charactersToUse.length) ) )));
+        }
+        return str;
     }
 
 }
