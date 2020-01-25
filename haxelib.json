@@ -1,7 +1,7 @@
 {
   "name" : "colyseus-websocket",
   "description" : "WebSockets everywhere! Including javascript, flash and sys targets.",
-  "version" : "1.0.5",
+  "version" : "1.0.6",
   "releasenote": "View repository/changelog for details.",
   "url" : "https://github.com/colyseus/haxe-ws",
   "classPath" : "src",

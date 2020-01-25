@@ -9,10 +9,8 @@ This fork aims to have:
 
 ## Installation
 
-This library is **NOT** available on `lib.haxe.org`. You must install it via:
-
 ```
-haxelib git haxe-ws https://github.com/colyseus/haxe-ws.git
+haxelib install colyseus-websocket
 ```
 
 ## License
