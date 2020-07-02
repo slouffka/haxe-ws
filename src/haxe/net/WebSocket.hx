@@ -14,7 +14,7 @@ class WebSocket {
     private function new() {
     }
 
-    dynamic static public function create(url:String, protocols:Array<String> = null, origin:String = null, debug:Bool = false):WebSocket {
+    dynamic static public function create(url:String, protocols:Array<String> = null, origin:String = null, debug:Bool = false, isServer:Bool = false):WebSocket {
         #if js
         return new haxe.net.impl.WebSocketJs(url, protocols);
         #else
@@ -23,7 +23,7 @@ class WebSocket {
                     return new haxe.net.impl.WebSocketFlashExternalInterface(url, protocols);
                 }
             #end
-            return haxe.net.impl.WebSocketGeneric.create(url, protocols, origin, debug);
+            return haxe.net.impl.WebSocketGeneric.create(url, protocols, origin, debug, isServer);
         #end
     }
 
@@ -35,8 +35,8 @@ class WebSocket {
 	 * @param	alredyRecieved - data already read from socket, it should be no more then full http header
 	 * @param	debug - debug messages?
 	 */
-	static public function createFromAcceptedSocket(socket:Socket2, alreadyRecieved:String = '', debug:Bool = false):WebSocket {
-		return haxe.net.impl.WebSocketGeneric.createFromAcceptedSocket(socket, alreadyRecieved, debug);
+	static public function createFromAcceptedSocket(socket:Socket2, alreadyRecieved:String = '', debug:Bool = false, isServer:Bool = false):WebSocket {
+		return haxe.net.impl.WebSocketGeneric.createFromAcceptedSocket(socket, alreadyRecieved, debug, isServer);
 	}
 	#end
 

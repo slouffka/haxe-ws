@@ -12,6 +12,7 @@ class WebSocketServer
 { 
 	var _isDebug:Bool;
 	var _isSecure:Bool;
+  var _isServer:Bool = true; // workaround to send unmasked frames from server to client
 	var _listenSocket:sys.net.Socket;
 
 	#if neko
@@ -56,7 +57,7 @@ class WebSocketServer
 				socket = _listenSocket.accept();
 			}
 			return WebSocket.createFromAcceptedSocket(
-				Socket2.createFromExistingSocket(socket, _isDebug), '', _isDebug
+				Socket2.createFromExistingSocket(socket, _isDebug), '', _isDebug, _isServer
 			);
 		}
 		catch (e:Dynamic) {

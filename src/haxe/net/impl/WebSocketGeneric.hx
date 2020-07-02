@@ -19,13 +19,15 @@ class WebSocketGeneric extends WebSocket {
     private var state:State = State.Handshake;
     public var debug:Bool = true;
     private var needHandleData:Bool = false;
+    public var isServer:Bool = false;
 
-    function initialize(uri:String, protocols:Array<String> = null, origin:String = null, debug:Bool = true) {
+    function initialize(uri:String, protocols:Array<String> = null, origin:String = null, debug:Bool = true, ?isServer:Bool = false) {
         if (origin == null) origin = "http://127.0.0.1/";
         this.protocols = protocols;
         this.origin = origin;
         this.key = Base64.encode(Crypto.getSecureRandomBytes(16));
         this.debug = debug;
+        this.isServer = isServer;
         var reg = ~/^(\w+?):\/\/([\w\.-]+)(:(\d+))?(\/.*)?$/;
         //var reg = ~/^(\w+?):/;
         if (!reg.match(uri)) throw 'Uri not matching websocket uri "${uri}"';
@@ -69,14 +71,15 @@ class WebSocketGeneric extends WebSocket {
         };
     }
 
-    public static function create(uri:String, protocols:Array<String> = null, origin:String = null, debug:Bool) {
-        return new WebSocketGeneric().initialize(uri, protocols, origin, debug);
+    public static function create(uri:String, protocols:Array<String> = null, origin:String = null, debug:Bool, isServer:Bool = false) {
+        return new WebSocketGeneric().initialize(uri, protocols, origin, debug, isServer);
     }
 
-    public static function createFromAcceptedSocket(socket:Socket2, alreadyRecieved:String = '', debug:Bool) {
+    public static function createFromAcceptedSocket(socket:Socket2, alreadyRecieved:String = '', debug:Bool, isServer:Bool) {
         var websocket = new WebSocketGeneric();
         websocket.socket = socket;
         websocket.debug = debug;
+        websocket.isServer = isServer;
         websocket.commonInitialize();
         websocket.state = State.ServerHandshake;
         websocket.httpHeader = alreadyRecieved;
@@ -403,8 +406,18 @@ class WebSocketGeneric extends WebSocket {
     private function prepareFrame(data:Bytes, type:Opcode, isFinal:Bool):Bytes {
         var out = new BytesRW();
 
-        //Chrome: VM321:1 WebSocket connection to 'ws://localhost:8000/' failed: A server must not mask any frames that it sends to the client.
-        var isMasked = true; //false; // All clients messages must be masked: http://tools.ietf.org/html/rfc6455#section-5.1
+        // Chrome: VM321:1 WebSocket connection to 'ws://localhost:8000/'
+        // failed: A server must not mask any frames that it sends to the
+        // client.
+        //
+        // All clients messages must be masked:
+        // http://tools.ietf.org/html/rfc6455#section-5.1
+        //
+        // Actually Chrome implemented this spec well. Read carefully from the
+        // same RFC: "A server MUST NOT mask any frames that it sends to the
+        // client. A client MUST close a connection if it detects a masked
+        // frame."
+        var isMasked = isServer ? false : true;
         var mask = generateMask();
         var sizeMask = (isMasked ? 0x80 : 0x00);
 
