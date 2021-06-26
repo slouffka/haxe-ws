@@ -101,7 +101,7 @@ class SocketSys extends Socket2 {
 						out.writeBytes(data.sub(0, readed));
 					}
 				} catch (e:Dynamic) {
-                    needClose = !(e == 'Blocking' || (Std.is(e, Error) && (
+                    needClose = !(e == 'Blocking' || (Std.isOfType(e, Error) && (
                         (e:Error).match(Error.Custom(Error.Blocked)) ||
                         (e:Error).match(Error.Blocked))
                     ));
